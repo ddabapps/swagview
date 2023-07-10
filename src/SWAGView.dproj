@@ -1,4 +1,4 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{618B77F0-B36C-4C50-91CE-F5132BB2778F}</ProjectGuid>
         <ProjectVersion>19.5</ProjectVersion>
@@ -141,6 +141,11 @@
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <PreBuildEvent><![CDATA[DEL "..\_build\$(Platform)\$(Config)\bin\Version.res"
+"$(VIEDROOT)\VIEd.exe" -makerc  .\Version.vi .\Version.virc
+"$(BDSBIN)\BRCC32" -fo "..\_build\$(Platform)\$(Config)\bin\Version.res" .\Version.virc
+DEL .\Version.virc
+$(PreBuildEvent)]]></PreBuildEvent>
         <Icon_MainIcon>dd-windows-icon.ico</Icon_MainIcon>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
@@ -151,6 +156,12 @@
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <Icon_MainIcon>dd-windows-icon.ico</Icon_MainIcon>
+        <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <PreBuildEvent><![CDATA[DEL "..\_build\$(Platform)\$(Config)\bin\Version.res"
+"$(VIEDROOT)\VIEd.exe" -makerc  .\Version.vi .\Version.virc
+"$(BDSBIN)\BRCC32" -fo "..\_build\$(Platform)\$(Config)\bin\Version.res" .\Version.virc
+DEL .\Version.virc
+$(PreBuildEvent)]]></PreBuildEvent>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
@@ -1087,4 +1098,52 @@
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
+    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
+        <PreBuildEvent>DEL &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot;
+&quot;$(VIEDROOT)\VIEd.exe&quot; -makerc  .\Version.vi .\Version.virc
+&quot;$(BDSBIN)\BRCC32&quot; -fo &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot; .\Version.virc
+DEL .\Version.virc
+</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
+        <PreBuildEvent>DEL &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot;
+&quot;$(VIEDROOT)\VIEd.exe&quot; -makerc  .\Version.vi .\Version.virc
+&quot;$(BDSBIN)\BRCC32&quot; -fo &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot; .\Version.virc
+DEL .\Version.virc
+</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
+        <PreBuildEvent>DEL &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot;
+&quot;$(VIEDROOT)\VIEd.exe&quot; -makerc  .\Version.vi .\Version.virc
+&quot;$(BDSBIN)\BRCC32&quot; -fo &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot; .\Version.virc
+DEL .\Version.virc
+</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
+        <PreBuildEvent>DEL &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot;
+&quot;$(VIEDROOT)\VIEd.exe&quot; -makerc  .\Version.vi .\Version.virc
+&quot;$(BDSBIN)\BRCC32&quot; -fo &quot;..\_build\$(Platform)\$(Config)\bin\Version.res&quot; .\Version.virc
+DEL .\Version.virc
+</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
 </Project>
