@@ -1,0 +1,186 @@
+object DBSetupDlg: TDBSetupDlg
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu]
+  BorderStyle = Single
+  Caption = 'SWAG Database Setup'
+  ClientHeight = 280
+  ClientWidth = 476
+  Position = OwnerFormCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnShow = FormShow
+  DesignerMasterStyle = 0
+  object InfoLbl1: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    Position.X = 8.000000000000000000
+    Position.Y = 8.000000000000000000
+    Size.Width = 460.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.VertAlign = Leading
+    Text = 
+      'SWAG is installaed from a zip file that you need to download fro' +
+      'm the delphidabbler/swag repository on GitHub.'
+    TabOrder = 5
+  end
+  object InfoLbl2: TLabel
+    AutoSize = True
+    Position.X = 8.000000000000000000
+    Position.Y = 50.000000000000000000
+    Size.Width = 460.000000000000000000
+    Size.Height = 16.000000000000000000
+    Size.PlatformDefault = False
+    TextSettings.VertAlign = Leading
+    Text = 'To do that:'
+    TabOrder = 6
+  end
+  object InfoLbl3: TLabel
+    AutoSize = True
+    Position.X = 24.000000000000000000
+    Position.Y = 74.000000000000000000
+    Size.Width = 169.142852783203100000
+    Size.Height = 16.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Go to the SWAG releases page: '
+    TabOrder = 7
+  end
+  object InfoLbl4: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = True
+    Position.X = 24.000000000000000000
+    Position.Y = 98.000000000000000000
+    Size.Width = 444.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    Text = 
+      'Download the zip file named dd-swag-<version>.zip, where <versio' +
+      'n> is the release version number.'
+    TabOrder = 8
+  end
+  object BulletLbl1: TLabel
+    Position.X = 8.000000000000000000
+    Position.Y = 74.000000000000000000
+    Size.Width = 9.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = #8226
+    TabOrder = 11
+  end
+  object BulletLbl2: TLabel
+    Position.X = 8.000000000000000000
+    Position.Y = 99.000000000000000000
+    Size.Width = 9.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = #8226
+    TabOrder = 12
+  end
+  object BulletLbl3: TLabel
+    Position.X = 8.000000000000000000
+    Position.Y = 139.000000000000000000
+    Size.Width = 9.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = #8226
+    TabOrder = 13
+  end
+  object InfoLbl5: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = True
+    Position.X = 24.000000000000000000
+    Position.Y = 138.000000000000000000
+    Size.Width = 444.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    Text = 
+      'Enter the full path of the zip file you just downloaded in the f' +
+      'ollowing edit box. Alternatively, click the button to choose fro' +
+      'm a file dialogue box:'
+    TabOrder = 9
+  end
+  object SWAGPathEdit: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 1
+    Position.X = 24.000000000000000000
+    Position.Y = 178.000000000000000000
+    Size.Width = 404.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    OnChange = SWAGPathEditChange
+    OnKeyUp = SWAGPathEditKeyUp
+  end
+  object ChooseDirBtn: TButton
+    Anchors = [akTop, akRight]
+    Position.X = 436.000000000000000000
+    Position.Y = 178.000000000000000000
+    Size.Width = 32.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = '...'
+    OnClick = ChooseDirBtnClick
+  end
+  object InfoLbl6: TLabel
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = True
+    Position.X = 24.000000000000000000
+    Position.Y = 208.000000000000000000
+    Size.Width = 444.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    Text = 
+      'Click the Install button to install the database from the chosen' +
+      ' zip file. Click Cancel to abort the installation.'
+    TabOrder = 10
+  end
+  object BulletLbl4: TLabel
+    Position.X = 7.000000000000000000
+    Position.Y = 208.000000000000000000
+    Size.Width = 9.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = #8226
+    TabOrder = 14
+  end
+  object InstallBtn: TButton
+    Anchors = [akTop, akRight]
+    Default = True
+    ModalResult = 1
+    Position.X = 300.000000000000000000
+    Position.Y = 248.000000000000000000
+    TabOrder = 3
+    Text = 'Install'
+  end
+  object CancelBtn: TButton
+    Anchors = [akTop, akRight]
+    Cancel = True
+    ModalResult = 2
+    Position.X = 388.000000000000000000
+    Position.Y = 248.000000000000000000
+    Size.Width = 80.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'Cancel'
+  end
+  object SWAGWebBtn: TButton
+    Position.X = 192.000000000000000000
+    Position.Y = 73.000000000000000000
+    Size.Width = 276.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    Text = 'https://github.com/delphidabbler/swag/releases'
+    OnClick = SWAGWebBtnClick
+  end
+  object SWAGFileOpenDlg: TOpenDialog
+    DefaultExt = '.zip'
+    Filter = 'Zip files|*.zip'
+    Options = [ofPathMustExist, ofFileMustExist, ofShareAware, ofEnableSizing]
+    Left = 312
+    Top = 16
+  end
+end

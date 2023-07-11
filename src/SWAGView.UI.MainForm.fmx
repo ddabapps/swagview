@@ -2,10 +2,246 @@ object MainForm: TMainForm
   Left = 0
   Top = 0
   Caption = 'SWAGView'
-  ClientHeight = 480
-  ClientWidth = 640
+  ClientHeight = 532
+  ClientWidth = 832
+  Position = DesktopCenter
   FormFactor.Width = 320
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   DesignerMasterStyle = 0
+  object TopPanel: TPanel
+    Align = MostTop
+    Margins.Bottom = 4.000000000000000000
+    Size.Width = 832.000000000000000000
+    Size.Height = 41.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object VersionLbl: TLabel
+      Anchors = [akLeft, akTop, akRight]
+      Position.X = 488.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 336.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      TextSettings.HorzAlign = Trailing
+      TabOrder = 3
+    end
+    object InstallBtn: TButton
+      Position.X = 4.000000000000000000
+      Position.Y = 9.000000000000000000
+      Size.Width = 181.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Install SWAG Database'
+      OnClick = InstallBtnClick
+    end
+    object LoadingLbl: TLabel
+      Anchors = [akLeft, akTop, akBottom]
+      Position.X = 320.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 120.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+    end
+    object HelpBtn: TButton
+      Position.X = 209.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 64.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Help'
+      OnClick = HelpBtnClick
+    end
+  end
+  object BottomPanel: TPanel
+    Align = MostBottom
+    Margins.Top = 4.000000000000000000
+    Position.Y = 500.000000000000000000
+    Size.Width = 832.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object HelpLbl: TLabel
+      Align = Client
+      Margins.Left = 4.000000000000000000
+      Margins.Top = 4.000000000000000000
+      Margins.Right = 4.000000000000000000
+      Margins.Bottom = 4.000000000000000000
+      Size.Width = 824.000000000000000000
+      Size.Height = 24.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+    end
+  end
+  object TreeView: TTreeView
+    Align = MostLeft
+    Margins.Left = 4.000000000000000000
+    Position.X = 4.000000000000000000
+    Position.Y = 45.000000000000000000
+    Size.Width = 205.000000000000000000
+    Size.Height = 451.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    OnDblClick = TreeViewDblClick
+    OnMouseMove = TreeViewMouseMove
+    OnMouseLeave = TreeViewMouseLeave
+    OnChange = TreeViewChange
+    OnKeyDown = TreeViewKeyDown
+    OnKeyUp = TreeViewKeyUp
+    Viewport.Width = 201.000000000000000000
+    Viewport.Height = 447.000000000000000000
+  end
+  object Splitter: TSplitter
+    Align = Left
+    Cursor = crHSplit
+    MinSize = 20.000000000000000000
+    Position.X = 209.000000000000000000
+    Position.Y = 45.000000000000000000
+    Size.Width = 4.000000000000000000
+    Size.Height = 451.000000000000000000
+    Size.PlatformDefault = False
+  end
+  object DetailContainer: TPanel
+    Align = Client
+    Margins.Right = 4.000000000000000000
+    Size.Width = 615.000000000000000000
+    Size.Height = 451.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    object MetaPanel: TPanel
+      Align = Top
+      Locked = True
+      Margins.Bottom = 4.000000000000000000
+      Size.Width = 615.000000000000000000
+      Size.Height = 96.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object MetaTitle: TLabel
+        Anchors = [akLeft, akTop, akRight]
+        StyledSettings = [Family, Size, FontColor]
+        Locked = True
+        Position.X = 8.000000000000000000
+        Position.Y = 4.000000000000000000
+        Size.Width = 599.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        Text = '<nothing selected>'
+        TabOrder = 8
+      end
+      object MetaAuthorLbl: TLabel
+        Position.X = 8.000000000000000000
+        Position.Y = 24.000000000000000000
+        Size.Width = 91.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Author:'
+        TabOrder = 1
+      end
+      object MetaIDsLbl: TLabel
+        Position.X = 8.000000000000000000
+        Position.Y = 40.000000000000000000
+        Size.Width = 91.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'ID (Category ID):'
+        TabOrder = 7
+      end
+      object MetaFileNameLbl: TLabel
+        Position.X = 8.000000000000000000
+        Position.Y = 56.000000000000000000
+        Size.Width = 91.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'File:'
+        TabOrder = 5
+      end
+      object MetaAuthor: TLabel
+        Anchors = [akLeft, akTop, akRight]
+        Position.X = 107.000000000000000000
+        Position.Y = 24.000000000000000000
+        Size.Width = 500.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'N/a'
+        TabOrder = 0
+      end
+      object MetaIDs: TLabel
+        Anchors = [akLeft, akTop, akRight]
+        Position.X = 107.000000000000000000
+        Position.Y = 40.000000000000000000
+        Size.Width = 500.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'N/a'
+        TabOrder = 6
+      end
+      object MetaFileName: TLabel
+        Anchors = [akLeft, akTop, akRight]
+        Position.X = 107.000000000000000000
+        Position.Y = 56.000000000000000000
+        Size.Width = 500.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'N/a'
+        TabOrder = 3
+      end
+      object MetaDateLbl: TLabel
+        Position.X = 8.000000000000000000
+        Position.Y = 72.000000000000000000
+        Size.Width = 91.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Date:'
+        TabOrder = 4
+      end
+      object MetaDate: TLabel
+        Anchors = [akLeft, akTop, akRight]
+        Position.X = 107.000000000000000000
+        Position.Y = 72.000000000000000000
+        Size.Width = 500.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'N/a'
+        TabOrder = 2
+      end
+    end
+    object Content: TMemo
+      Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+      DataDetectorTypes = []
+      ReadOnly = True
+      StyledSettings = [Size, Style, FontColor]
+      TextSettings.Font.Family = 'Courier New'
+      Align = Client
+      Size.Width = 615.000000000000000000
+      Size.Height = 351.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Viewport.Width = 611.000000000000000000
+      Viewport.Height = 347.000000000000000000
+      object EmptyDBNoticeLbl: TLabel
+        Align = Client
+        Size.Width = 611.000000000000000000
+        Size.Height = 347.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 
+          'The SWAG Database is not installed.'#13#10#13#10'Click the "Install SWAG D' +
+          'atabase" button above to install it.'
+        Visible = False
+        TabOrder = 0
+      end
+    end
+  end
+  object LoadDataTimer: TTimer
+    Interval = 500
+    OnTimer = LoadDataTimerTimer
+    Left = 328
+    Top = 224
+  end
 end

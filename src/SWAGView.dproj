@@ -207,8 +207,14 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="SWAGView.SWAG.Types.pas"/>
         <DCCReference Include="SWAGView.SWAG.Version.pas"/>
         <DCCReference Include="SWAGView.SWAG.XMLProcessor.pas"/>
+        <DCCReference Include="SWAGView.UI.DBSetupDlg.pas">
+            <Form>DBSetupDlg</Form>
+        </DCCReference>
         <DCCReference Include="SWAGView.UI.MainForm.pas">
             <Form>MainForm</Form>
+        </DCCReference>
+        <DCCReference Include="SWAGView.UI.WaitDlg.pas">
+            <Form>WaitDlg</Form>
         </DCCReference>
         <DCCReference Include="SWAGView.Utils.IO.pas"/>
         <DCCReference Include="SWAGView.Utils.StringParsers.pas"/>
