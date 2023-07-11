@@ -6,7 +6,17 @@
 uses
   System.StartUpCopy,
   FMX.Forms,
+  SWAGView.SWAG in 'SWAGView.SWAG.pas',
+  SWAGView.SWAG.Installer in 'SWAGView.SWAG.Installer.pas',
+  SWAGView.SWAG.Reader in 'SWAGView.SWAG.Reader.pas',
+  SWAGView.SWAG.Types in 'SWAGView.SWAG.Types.pas',
+  SWAGView.SWAG.Version in 'SWAGView.SWAG.Version.pas',
+  SWAGView.SWAG.XMLProcessor in 'SWAGView.SWAG.XMLProcessor.pas',
   SWAGView.UI.MainForm in 'SWAGView.UI.MainForm.pas' {MainForm},
+  SWAGView.Utils.IO in 'SWAGView.Utils.IO.pas',
+  SWAGView.Utils.StringParsers in 'SWAGView.Utils.StringParsers.pas',
+  SWAGView.VersionInfo in 'SWAGView.VersionInfo.pas',
+  SWAGView.XMLDocumentEx in 'SWAGView.XMLDocumentEx.pas';
 
 begin
   {$IFDEF DEBUG}

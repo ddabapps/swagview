@@ -201,9 +201,19 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="SWAGView.SWAG.pas"/>
+        <DCCReference Include="SWAGView.SWAG.Installer.pas"/>
+        <DCCReference Include="SWAGView.SWAG.Reader.pas"/>
+        <DCCReference Include="SWAGView.SWAG.Types.pas"/>
+        <DCCReference Include="SWAGView.SWAG.Version.pas"/>
+        <DCCReference Include="SWAGView.SWAG.XMLProcessor.pas"/>
         <DCCReference Include="SWAGView.UI.MainForm.pas">
             <Form>MainForm</Form>
         </DCCReference>
+        <DCCReference Include="SWAGView.Utils.IO.pas"/>
+        <DCCReference Include="SWAGView.Utils.StringParsers.pas"/>
+        <DCCReference Include="SWAGView.VersionInfo.pas"/>
+        <DCCReference Include="SWAGView.XMLDocumentEx.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
