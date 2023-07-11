@@ -19,7 +19,7 @@ Character Set=1252
 Language=2057
 
 [String File Info]
-File Description=SWAG Snippets Viewer
+File Description=SWAG Viewer
 Product Version=v<%version.release><%version.suffix>
 Comments=Mozilla Public License v2
 Legal Copyright=Copyright © <%version.copyright-date> Peter Johnson (https://gravatar.com/delphidabbler), <COMMENTS>
