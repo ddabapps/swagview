@@ -55,6 +55,10 @@ The release script additionally requires that [InfoZIP `zip.exe`](https://delphi
 
 SWAGView is licensed under the terms of the [Mozilla Public Licence v2.0](https://www.mozilla.org/MPL/2.0/).
 
+## Changes
+
+See [`CHANGELOG.md`](https://github.com/ddabapps/swagview/blob/main/CHANGELOG.md) for details of notable changes to the project.
+
 ## Bug Reports and Features
 
 You can report bugs or request new features using the [Issues](https://github.com/ddabapps/swagview/issues) section of the SWAGView GitHub project. You will need a GitHub account to do this.
