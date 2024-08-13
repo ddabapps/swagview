@@ -16,6 +16,8 @@ interface
 uses
   System.SysUtils,
   System.Classes,
+  System.Actions,
+  FMX.ActnList,
   FMX.Controls,
   FMX.Controls.Presentation,
   FMX.Layouts,
@@ -55,6 +57,9 @@ type
     InstallBtn: TButton;
     EmptyDBNoticeLbl: TLabel;
     HelpBtn: TButton;
+    CopyBtn: TButton;
+    ActionList: TActionList;
+    CopyAction: TAction;
     procedure LoadDataTimerTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -69,9 +74,12 @@ type
     procedure TreeViewKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
     procedure HelpBtnClick(Sender: TObject);
+    procedure CopyActionExecute(Sender: TObject);
+    procedure CopyActionUpdate(Sender: TObject);
   strict private
     var
       fSWAG: TSWAG;
+      fCurrentPacket: TSWAGPacket;   // Auto-initialised to null
     class function EscapeAmpersands(const AText: string): string;
     class procedure ErrorMessageDlg(const AMsg: string);
     function InstallDatabase(const AZipFilePath: string): Boolean;
@@ -87,9 +95,9 @@ type
     procedure ShowInstallBtn(const ACaption: string);
     procedure UpdateEmptyDBNotice(const Show: Boolean);
     procedure UpdateTVItemHelp(const AItem: TTreeViewItem);
-  public
-
   end;
+
+  EMain = class(Exception);
 
 var
   MainForm: TMainForm;
@@ -99,6 +107,7 @@ implementation
 uses
   System.UITypes,
   FMX.DialogService,
+  FMX.Platform,
   Winapi.Windows,
   Winapi.ShellAPI,
   SWAGView.UI.DBSetupDlg,
@@ -132,13 +141,72 @@ begin
   ShowInstallBtn('Install SWAG Database...');
 end;
 
-procedure TMainForm.DisplayPacket(const APacket: TSWAGPacket);
+procedure TMainForm.CopyActionExecute(Sender: TObject);
+resourcestring
+  sBadCatID = 'Invalid snippet category ID %0:d for snippet ID %1:d';
+  sFmtStr =
+    '''
+    {
+      SWAG Metadata:
+        Title     : %0:s
+        Author    : %1:s
+        Category  : %2:d: %3:s
+        Packet ID : %4:d
+        File name : %5:s
+        Date      : %6:s
+    }
+
+    %7:s
+    ''';
 begin
-  // TODO: Display document type (Pascal or Plain text)
+  var CB : IFMXClipboardService;
+  TPlatformServices.Current.SupportsPlatformService(
+    IFMXClipboardService, CB
+  );
+  Assert(Assigned(CB));
+  Assert(Assigned(fSWAG));
+  Assert(not fCurrentPacket.IsNull);
+
+  var Category: TSWAGCategory;
+  if not fSWAG.TryLookupCategoryByID(fCurrentPacket.Category, Category) then
+    raise EMain.CreateFmt(
+      sBadCatID, [fCurrentPacket.Category, fCurrentPacket.ID]
+    );
+  var CBContent := Format(
+    sFmtStr,
+    [
+      fCurrentPacket.Title,
+      fCurrentPacket.Author,
+      Category.ID,
+      Category.Title,
+      fCurrentPacket.ID,
+      fCurrentPacket.FileName,
+      FormatDateTime(  // display date in correct sys locale format
+        'ddddd', fCurrentPacket.DateStamp, TFormatSettings.Create
+      ),
+      fCurrentPacket.SourceCode
+    ]
+  );
+  CB.SetClipboard(CBContent);
+end;
+
+procedure TMainForm.CopyActionUpdate(Sender: TObject);
+begin
+  var CBAvailable := TPlatformServices.Current.SupportsPlatformService(
+    IFMXClipboardService
+  );
+  CopyAction.Enabled := CBAvailable and not fCurrentPacket.IsNull
+end;
+
+procedure TMainForm.DisplayPacket(const APacket: TSWAGPacket);
+  // TODO -cRefactor: Refactor to always use fCurrentPacket and remove parameter
+begin
+  // TODO -cEnhancement: Display document type (Pascal or Plain text)
   MetaTitle.Text := EscapeAmpersands(APacket.Title);
   MetaAuthor.Text := APacket.Author;
   MetaIDs.Text := Format('%0:d (%1:d)', [APacket.ID, APacket.Category]);
   MetaFileName.Text := APacket.FileName;
+  // TODO -cRefactor: Refactor out method to format date stamp: used in two places
   MetaDate.Text := FormatDateTime(  // display date in correct sys locale format
     'ddddd', APacket.DateStamp, TFormatSettings.Create
   );
@@ -212,6 +280,7 @@ begin
     begin
       Assert(Assigned(fSWAG));
       var Packet := fSWAG.Packet(Cardinal(Selected.Tag));
+      fCurrentPacket := Packet;
       DisplayPacket(Packet);
     end;
     // >= 3 should never happen
@@ -221,6 +290,7 @@ end;
 
 procedure TMainForm.HelpBtnClick(Sender: TObject);
 begin
+  // TODO -cRefactor: Change to use an action to execute (possibly a TBrowseURL)
   const ExecVerb: PChar = 'open';
   const HelpURL: PChar = 'https://delphidabbler.com/help/swagview/0.0/index';
   ShellExecute(0, ExecVerb, HelpURL, nil, nil, SW_SHOW);
@@ -228,6 +298,7 @@ end;
 
 procedure TMainForm.InstallBtnClick(Sender: TObject);
 begin
+  // TODO -cRefactor: Change to use an action to execute
   var ZipFilePath: string;
   if TDBSetupDlg.GetDBFilePath(Self, ZipFilePath) then
   begin
