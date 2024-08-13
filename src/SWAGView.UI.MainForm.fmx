@@ -36,26 +36,30 @@ object MainForm: TMainForm
       Size.PlatformDefault = False
       TabOrder = 0
       Text = 'Install SWAG Database'
+      TextSettings.Trimming = None
       OnClick = InstallBtnClick
     end
-    object LoadingLbl: TLabel
-      Anchors = [akLeft, akTop, akBottom]
-      Position.X = 320.000000000000000000
-      Position.Y = 8.000000000000000000
-      Size.Width = 120.000000000000000000
-      Size.Height = 25.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 2
-    end
     object HelpBtn: TButton
-      Position.X = 209.000000000000000000
+      Position.X = 320.000000000000000000
       Position.Y = 8.000000000000000000
       Size.Width = 64.000000000000000000
       Size.Height = 22.000000000000000000
       Size.PlatformDefault = False
-      TabOrder = 1
+      TabOrder = 2
       Text = 'Help'
+      TextSettings.Trimming = None
       OnClick = HelpBtnClick
+    end
+    object CopyBtn: TButton
+      Action = CopyAction
+      ImageIndex = -1
+      Position.X = 213.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 92.000000000000000000
+      Size.Height = 22.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      TextSettings.Trimming = None
     end
   end
   object BottomPanel: TPanel
@@ -243,5 +247,15 @@ object MainForm: TMainForm
     OnTimer = LoadDataTimerTimer
     Left = 328
     Top = 224
+  end
+  object ActionList: TActionList
+    Left = 456
+    Top = 224
+    object CopyAction: TAction
+      Text = '&Copy Packet'
+      ShortCut = 24643
+      OnExecute = CopyActionExecute
+      OnUpdate = CopyActionUpdate
+    end
   end
 end
