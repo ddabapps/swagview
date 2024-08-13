@@ -60,22 +60,24 @@ type
     CopyBtn: TButton;
     ActionList: TActionList;
     CopyAction: TAction;
+    InstallDBAction: TAction;
+    HelpAction: TAction;
     procedure LoadDataTimerTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure InstallBtnClick(Sender: TObject);
     procedure TreeViewMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure TreeViewMouseLeave(Sender: TObject);
     procedure TreeViewChange(Sender: TObject);
     procedure TreeViewKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure HelpBtnClick(Sender: TObject);
     procedure CopyActionExecute(Sender: TObject);
     procedure CopyActionUpdate(Sender: TObject);
+    procedure InstallDBActionExecute(Sender: TObject);
+    procedure HelpActionExecute(Sender: TObject);
   strict private
     var
       fSWAG: TSWAG;
@@ -138,7 +140,7 @@ begin
   Content.Lines.Clear;
   UpdateEmptyDBNotice(True);
   FreeAndNil(fSWAG);
-  ShowInstallBtn('Install SWAG Database...');
+  ShowInstallBtn('Install SWAG &Database...');
 end;
 
 procedure TMainForm.CopyActionExecute(Sender: TObject);
@@ -288,28 +290,11 @@ begin
   UpdateTVItemHelp(Selected);
 end;
 
-procedure TMainForm.HelpBtnClick(Sender: TObject);
+procedure TMainForm.HelpActionExecute(Sender: TObject);
 begin
-  // TODO -cRefactor: Change to use an action to execute (possibly a TBrowseURL)
   const ExecVerb: PChar = 'open';
   const HelpURL: PChar = 'https://delphidabbler.com/help/swagview/0.0/index';
   ShellExecute(0, ExecVerb, HelpURL, nil, nil, SW_SHOW);
-end;
-
-procedure TMainForm.InstallBtnClick(Sender: TObject);
-begin
-  // TODO -cRefactor: Change to use an action to execute
-  var ZipFilePath: string;
-  if TDBSetupDlg.GetDBFilePath(Self, ZipFilePath) then
-  begin
-    if InstallDatabase(ZipFilePath) then
-      LoadDatabase
-    else
-    begin
-      ClearDatabase;
-      DisplayVersionInformation;
-    end;
-  end;
 end;
 
 function TMainForm.InstallDatabase(const AZipFilePath: string): Boolean;
@@ -354,6 +339,21 @@ begin
   end;
 end;
 
+procedure TMainForm.InstallDBActionExecute(Sender: TObject);
+begin
+  var ZipFilePath: string;
+  if TDBSetupDlg.GetDBFilePath(Self, ZipFilePath) then
+  begin
+    if InstallDatabase(ZipFilePath) then
+      LoadDatabase
+    else
+    begin
+      ClearDatabase;
+      DisplayVersionInformation;
+    end;
+  end;
+end;
+
 procedure TMainForm.LoadDatabase;
 begin
   Cursor := crHourGlass;
@@ -365,7 +365,7 @@ begin
 
     DisplayVersionInformation;
     PopulateTopLevelTreeView;
-    ShowInstallBtn('Update SWAG Database...');
+    ShowInstallBtn('Update SWAG &Database...');
     UpdateEmptyDBNotice(False);
   finally
     Cursor := crDefault;
