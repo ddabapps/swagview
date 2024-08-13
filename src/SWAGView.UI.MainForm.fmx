@@ -26,7 +26,7 @@ object MainForm: TMainForm
       Size.Height = 25.000000000000000000
       Size.PlatformDefault = False
       TextSettings.HorzAlign = Trailing
-      TabOrder = 3
+      TabOrder = 2
     end
     object InstallBtn: TButton
       Position.X = 4.000000000000000000
@@ -36,16 +36,8 @@ object MainForm: TMainForm
       Size.PlatformDefault = False
       TabOrder = 0
       Text = 'Install SWAG Database'
+      TextSettings.Trimming = None
       OnClick = InstallBtnClick
-    end
-    object LoadingLbl: TLabel
-      Anchors = [akLeft, akTop, akBottom]
-      Position.X = 320.000000000000000000
-      Position.Y = 8.000000000000000000
-      Size.Width = 120.000000000000000000
-      Size.Height = 25.000000000000000000
-      Size.PlatformDefault = False
-      TabOrder = 2
     end
     object HelpBtn: TButton
       Position.X = 209.000000000000000000
@@ -55,6 +47,7 @@ object MainForm: TMainForm
       Size.PlatformDefault = False
       TabOrder = 1
       Text = 'Help'
+      TextSettings.Trimming = None
       OnClick = HelpBtnClick
     end
   end

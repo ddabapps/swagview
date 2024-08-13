@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at https://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2023, Peter Johnson (gravatar.com/delphidabbler).
+ * Copyright (C) 2023-2024, Peter Johnson (gravatar.com/delphidabbler).
  *
  * Implements the application's main window and core functionality.
 }
@@ -54,7 +54,6 @@ type
     VersionLbl: TLabel;
     InstallBtn: TButton;
     EmptyDBNoticeLbl: TLabel;
-    LoadingLbl: TLabel;
     HelpBtn: TButton;
     procedure LoadDataTimerTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -286,17 +285,20 @@ end;
 
 procedure TMainForm.LoadDatabase;
 begin
-  LoadingLbl.Text := 'Loading database...';
-  Application.ProcessMessages;
+  Cursor := crHourGlass;
+  try
+    Application.ProcessMessages;
 
-  FreeAndNil(fSWAG);  // recreate fSWAG if database read more than once
-  fSWAG := TSWAG.Create(TSWAGInstaller.SWAGDataDir);
+    FreeAndNil(fSWAG);  // recreate fSWAG if database read more than once
+    fSWAG := TSWAG.Create(TSWAGInstaller.SWAGDataDir);
 
-  DisplayVersionInformation;
-  PopulateTopLevelTreeView;
-  ShowInstallBtn('Update SWAG Database...');
-  UpdateEmptyDBNotice(False);
-  LoadingLbl.Text := string.Empty;
+    DisplayVersionInformation;
+    PopulateTopLevelTreeView;
+    ShowInstallBtn('Update SWAG Database...');
+    UpdateEmptyDBNotice(False);
+  finally
+    Cursor := crDefault;
+  end;
 end;
 
 procedure TMainForm.LoadDataTimerTimer(Sender: TObject);
@@ -313,7 +315,6 @@ end;
 procedure TMainForm.PopulateCategoryNode(const Node: TTreeViewItem);
 begin
   Assert(Assigned(fSWAG));
-  LoadingLbl.Text := 'Loading...';
   Cursor := crHourGlass;
   Application.ProcessMessages;
   try
@@ -323,7 +324,6 @@ begin
       AddTreeViewItemToParent(Node, Packet.Title, Packet.ID);
   finally
     Cursor := crDefault;
-    LoadingLbl.Text := string.Empty;
   end;
 end;
 
