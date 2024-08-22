@@ -183,9 +183,7 @@ begin
       Category.Title,
       fCurrentPacket.ID,
       fCurrentPacket.FileName,
-      FormatDateTime(  // display date in correct sys locale format
-        'ddddd', fCurrentPacket.DateStamp, TFormatSettings.Create
-      ),
+      fCurrentPacket.DateStampAsString,
       fCurrentPacket.SourceCode
     ]
   );
@@ -208,10 +206,7 @@ begin
   MetaAuthor.Text := APacket.Author;
   MetaIDs.Text := Format('%0:d (%1:d)', [APacket.ID, APacket.Category]);
   MetaFileName.Text := APacket.FileName;
-  // TODO -cRefactor: Refactor out method to format date stamp: used in two places
-  MetaDate.Text := FormatDateTime(  // display date in correct sys locale format
-    'ddddd', APacket.DateStamp, TFormatSettings.Create
-  );
+  MetaDate.Text := APacket.DateStampAsString;
   Content.BeginUpdate;
   try
     Content.Text := APacket.SourceCode;

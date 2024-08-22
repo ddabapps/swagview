@@ -57,11 +57,27 @@ type
       class operator Initialize(out Dest: TSWAGPacket);
       ///  <summary>Checks if record is null.</summary>
       function IsNull: Boolean;
+      ///  <summary>Returns date and time packey was added or updated in
+      ///  original SWAG archive, formatted as a valid date/time value in the
+      ///  current locale.</summary>
+      function DateStampAsString: string;
   end;
 
 implementation
 
+uses
+  System.SysUtils;
+
 { TSWAGPacket }
+
+function TSWAGPacket.DateStampAsString: string;
+const
+  ShortDateFmtStr = 'ddddd';
+begin
+  Result := FormatDateTime(
+    ShortDateFmtStr, DateStamp, TFormatSettings.Create
+  );
+end;
 
 class operator TSWAGPacket.Initialize(out Dest: TSWAGPacket);
 begin
