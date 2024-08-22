@@ -74,7 +74,6 @@ type
     ///  validation.</exception>
     procedure ValidateXMLDoc;
 
-    // TODO: move following method into TSWAGReader - it is not XML specific
     ///  <summary>Validates fields of given packet record as read from XML and
     ///  source code files.</summary>
     ///  <param name="Packet">[in] Packet record to be validated.</param>
@@ -82,7 +81,6 @@ type
     ///  </exception>
     procedure ValidatePacket(const Packet: TSWAGPacket);
 
-    // TODO: move following method into TSWAGReader - it is not XML specific
     ///  <summary>Validates fields of given partial packet record as read from
     ///  XML.</summary>
     ///  <param name="Packet">[in] Packet record to be validated.</param>

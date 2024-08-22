@@ -25,8 +25,6 @@ type
     Title: string;
   end;
 
-  // TODO: Create a separate record to use for partial (summary) packets
-
   ///  <summary>Record that encapsulates the data that defines a SWAG packet
   ///  </summary>
   TSWAGPacket = record
