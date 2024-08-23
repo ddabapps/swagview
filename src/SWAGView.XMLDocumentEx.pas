@@ -138,9 +138,16 @@ type
     IXMLDocument, IXMLDocumentEx
   )
   strict private
-    {TODO: Extract common code from FindChildElementsByNameAndAttr and
-           FindChildElementsByName into common method that takes a predicate
-           closure to determine what elements to select. }
+    ///  <summary>Find all child nodes of a parent node that match specified
+    ///  criteria.</summary>
+    ///  <param name="ParentNode">[in] Node containing child nodes to be found.
+    ///  </param>
+    ///  <param name="Predicate">[in] Closure that determines whether a given
+    ///  child node is to be included in the list of found nodes.</param>
+    ///  <returns><c>IXMLSimpleNodeList</c>. List of found nodes.</returns>
+    function FindChildElements(const ParentNode: IXMLNode;
+      const Predicate: TFunc<IXMLNode,Boolean>): IXMLSimpleNodeList;
+
     ///  <summary>Finds all child nodes of a parent node that are elements, have
     ///  a specified name and have a specified attribute value.</summary>
     ///  <param name="ParentNode">[in] Node containing child nodes to be found.
@@ -223,36 +230,47 @@ uses
 
 { TXMLDocumentEx }
 
-function TXMLDocumentEx.FindChildElementsByName(const ParentNode: IXMLNode;
-  const NodeName: DOMString): IXMLSimpleNodeList;
+function TXMLDocumentEx.FindChildElements(const ParentNode: IXMLNode;
+  const Predicate: TFunc<IXMLNode, Boolean>): IXMLSimpleNodeList;
 begin
   Assert(Assigned(ParentNode),
-    ClassName + '.FindChildElementsByName: ParentNode is nil');
+    ClassName + '.FindChildElements: ParentNode is nil');
   Result := TXMLSimpleNodeList.Create;
   var NodeList := ParentNode.ChildNodes;
   for var Idx := 0 to Pred(NodeList.Count) do
   begin
     var Node := NodeList[Idx];
-    if (Node.NodeType = ntElement) and (Node.NodeName = NodeName) then
+    if Predicate(Node) then
       Result.Add(Node);
   end;
+end;
+
+function TXMLDocumentEx.FindChildElementsByName(const ParentNode: IXMLNode;
+  const NodeName: DOMString): IXMLSimpleNodeList;
+begin
+  Result := FindChildElements(
+    ParentNode,
+    function (ChildNode: IXMLNode): Boolean
+    begin
+      Result := (ChildNode.NodeType = ntElement)
+        and (ChildNode.NodeName = NodeName);
+    end
+  );
 end;
 
 function TXMLDocumentEx.FindChildElementsByNameAndAttr(
   const ParentNode: IXMLNode; const NodeName, AttribName: DOMString;
   const AttribValue: OleVariant): IXMLSimpleNodeList;
 begin
-  Assert(Assigned(ParentNode),
-    ClassName + 'FindChildElementsByNameAndAttr: ParentNode is nil');
-  Result := TXMLSimpleNodeList.Create;
-  var NodeList := ParentNode.ChildNodes;
-  for var Idx := 0 to Pred(NodeList.Count) do
-  begin
-    var Node := NodeList[Idx];
-    if (Node.NodeType = ntElement) and (Node.NodeName = NodeName)
-      and (Node.Attributes[AttribName] = AttribValue) then
-      Result.Add(Node);
-  end;
+  Result := FindChildElements(
+    ParentNode,
+    function (ChildNode: IXMLNode): Boolean
+    begin
+      Result := (ChildNode.NodeType = ntElement)
+        and (ChildNode.NodeName = NodeName)
+        and (ChildNode.Attributes[AttribName] = AttribValue);
+    end
+  );
 end;
 
 function TXMLDocumentEx.FindFirstChildNodeByName(const ParentNode: IXMLNode;
