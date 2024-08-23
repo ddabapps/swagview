@@ -89,7 +89,7 @@ type
     procedure ClearDatabase;
     procedure AddTreeViewItemToParent(const AParent: TFmxObject;
       const AText: string; const AID: Cardinal);
-    procedure DisplayPacket(const APacket: TSWAGPacket);
+    procedure DisplayCurrentPacket;
     procedure PopulateTopLevelTreeView;
     procedure PopulateCategoryNode(const Node: TTreeViewItem);
     procedure HandleSelectedTVItemInteraction;
@@ -198,18 +198,18 @@ begin
   CopyAction.Enabled := CBAvailable and not fCurrentPacket.IsNull
 end;
 
-procedure TMainForm.DisplayPacket(const APacket: TSWAGPacket);
-  // TODO -cRefactor: Refactor to always use fCurrentPacket and remove parameter
+procedure TMainForm.DisplayCurrentPacket;
 begin
-  // TODO -cEnhancement: Display document type (Pascal or Plain text)
-  MetaTitle.Text := EscapeAmpersands(APacket.Title);
-  MetaAuthor.Text := APacket.Author;
-  MetaIDs.Text := Format('%0:d (%1:d)', [APacket.ID, APacket.Category]);
-  MetaFileName.Text := APacket.FileName;
-  MetaDate.Text := APacket.DateStampAsString;
+  MetaTitle.Text := EscapeAmpersands(fCurrentPacket.Title);
+  MetaAuthor.Text := fCurrentPacket.Author;
+  MetaIDs.Text := Format(
+    '%0:d (%1:d)', [fCurrentPacket.ID, fCurrentPacket.Category]
+  );
+  MetaFileName.Text := fCurrentPacket.FileName;
+  MetaDate.Text := fCurrentPacket.DateStampAsString;
   Content.BeginUpdate;
   try
-    Content.Text := APacket.SourceCode;
+    Content.Text := fCurrentPacket.SourceCode;
   finally
     Content.EndUpdate;
   end;
@@ -278,7 +278,7 @@ begin
       Assert(Assigned(fSWAG));
       var Packet := fSWAG.Packet(Cardinal(Selected.Tag));
       fCurrentPacket := Packet;
-      DisplayPacket(Packet);
+      DisplayCurrentPacket;
     end;
     // >= 3 should never happen
   end;
