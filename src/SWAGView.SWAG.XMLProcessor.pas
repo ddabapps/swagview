@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at https://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2020-2023, Peter Johnson (gravatar.com/delphidabbler).
+ * Copyright (C) 2020-2024, Peter Johnson (gravatar.com/delphidabbler).
  *
  * Based on code extracted from Src/SWAG.UXMLProcessor.pas copied from
  * https://github.com/delphidabbler/codesnip master branch as of commit 7482558.
@@ -74,7 +74,6 @@ type
     ///  validation.</exception>
     procedure ValidateXMLDoc;
 
-    // TODO: move following method into TSWAGReader - it is not XML specific
     ///  <summary>Validates fields of given packet record as read from XML and
     ///  source code files.</summary>
     ///  <param name="Packet">[in] Packet record to be validated.</param>
@@ -82,7 +81,6 @@ type
     ///  </exception>
     procedure ValidatePacket(const Packet: TSWAGPacket);
 
-    // TODO: move following method into TSWAGReader - it is not XML specific
     ///  <summary>Validates fields of given partial packet record as read from
     ///  XML.</summary>
     ///  <param name="Packet">[in] Packet record to be validated.</param>

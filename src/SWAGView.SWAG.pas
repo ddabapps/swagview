@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at https://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2023, Peter Johnson (gravatar.com/delphidabbler).
+ * Copyright (C) 2023-2024, Peter Johnson (gravatar.com/delphidabbler).
  *
  * Defines a class that provides top level, cached, access to the SWAG database.
 }
@@ -77,6 +77,16 @@ type
     ///  <param name="APacketID">[in] ID of required packet.</param>
     ///  <returns><c>TSWAGPacket</c>. Full details of required packet.</returns>
     function Packet(const APacketID: Cardinal): TSWAGPacket;
+
+    ///  <summary>Finds and returns the SWAG category with a given ID, if any.
+    ///  </summary>
+    ///  <param name="ACatID">[in] ID of required category.</param>
+    ///  <param name="ACategory">[out] Set to category record with the given ID.
+    ///  Undefined value if category ID is not found.</param>
+    ///  <returns><c>Boolean</c>. True if a category with the given ID was found
+    ///  or false if not.</returns>
+    function TryLookupCategoryByID(const ACatID: Cardinal; 
+      out ACategory: TSWAGCategory): Boolean;
   end;
 
 implementation
@@ -151,6 +161,20 @@ begin
     Result.Sort;
     fPartialPackets.Add(ACatID, Result);
   end;
+end;
+
+function TSWAG.TryLookupCategoryByID(const ACatID: Cardinal;
+  out ACategory: TSWAGCategory): Boolean;
+begin
+  for var Category in fCategories do
+  begin
+    if Category.ID = ACatID then
+    begin
+      ACategory := Category;
+      Exit(True);
+    end;
+  end;
+  Result := False;
 end;
 
 end.

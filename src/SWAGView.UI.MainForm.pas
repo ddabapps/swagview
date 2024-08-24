@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at https://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2023, Peter Johnson (gravatar.com/delphidabbler).
+ * Copyright (C) 2023-2024, Peter Johnson (gravatar.com/delphidabbler).
  *
  * Implements the application's main window and core functionality.
 }
@@ -16,6 +16,8 @@ interface
 uses
   System.SysUtils,
   System.Classes,
+  System.Actions,
+  FMX.ActnList,
   FMX.Controls,
   FMX.Controls.Presentation,
   FMX.Layouts,
@@ -54,25 +56,32 @@ type
     VersionLbl: TLabel;
     InstallBtn: TButton;
     EmptyDBNoticeLbl: TLabel;
-    LoadingLbl: TLabel;
     HelpBtn: TButton;
+    CopyBtn: TButton;
+    ActionList: TActionList;
+    CopyAction: TAction;
+    InstallDBAction: TAction;
+    HelpAction: TAction;
     procedure LoadDataTimerTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure TreeViewDblClick(Sender: TObject);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure InstallBtnClick(Sender: TObject);
     procedure TreeViewMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Single);
     procedure TreeViewMouseLeave(Sender: TObject);
     procedure TreeViewChange(Sender: TObject);
     procedure TreeViewKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
-    procedure HelpBtnClick(Sender: TObject);
+    procedure CopyActionExecute(Sender: TObject);
+    procedure CopyActionUpdate(Sender: TObject);
+    procedure InstallDBActionExecute(Sender: TObject);
+    procedure HelpActionExecute(Sender: TObject);
   strict private
     var
       fSWAG: TSWAG;
+      fCurrentPacket: TSWAGPacket;   // Auto-initialised to null
     class function EscapeAmpersands(const AText: string): string;
     class procedure ErrorMessageDlg(const AMsg: string);
     function InstallDatabase(const AZipFilePath: string): Boolean;
@@ -80,7 +89,7 @@ type
     procedure ClearDatabase;
     procedure AddTreeViewItemToParent(const AParent: TFmxObject;
       const AText: string; const AID: Cardinal);
-    procedure DisplayPacket(const APacket: TSWAGPacket);
+    procedure DisplayCurrentPacket;
     procedure PopulateTopLevelTreeView;
     procedure PopulateCategoryNode(const Node: TTreeViewItem);
     procedure HandleSelectedTVItemInteraction;
@@ -88,9 +97,9 @@ type
     procedure ShowInstallBtn(const ACaption: string);
     procedure UpdateEmptyDBNotice(const Show: Boolean);
     procedure UpdateTVItemHelp(const AItem: TTreeViewItem);
-  public
-
   end;
+
+  EMain = class(Exception);
 
 var
   MainForm: TMainForm;
@@ -100,6 +109,7 @@ implementation
 uses
   System.UITypes,
   FMX.DialogService,
+  FMX.Platform,
   Winapi.Windows,
   Winapi.ShellAPI,
   SWAGView.UI.DBSetupDlg,
@@ -130,22 +140,76 @@ begin
   Content.Lines.Clear;
   UpdateEmptyDBNotice(True);
   FreeAndNil(fSWAG);
-  ShowInstallBtn('Install SWAG Database...');
+  ShowInstallBtn('Install SWAG &Database...');
 end;
 
-procedure TMainForm.DisplayPacket(const APacket: TSWAGPacket);
+procedure TMainForm.CopyActionExecute(Sender: TObject);
+resourcestring
+  sBadCatID = 'Invalid snippet category ID %0:d for snippet ID %1:d';
+  sFmtStr =
+    '''
+    {
+      SWAG Metadata:
+        Title     : %0:s
+        Author    : %1:s
+        Category  : %2:d: %3:s
+        Packet ID : %4:d
+        File name : %5:s
+        Date      : %6:s
+    }
+
+    %7:s
+    ''';
 begin
-  // TODO: Display document type (Pascal or Plain text)
-  MetaTitle.Text := EscapeAmpersands(APacket.Title);
-  MetaAuthor.Text := APacket.Author;
-  MetaIDs.Text := Format('%0:d (%1:d)', [APacket.ID, APacket.Category]);
-  MetaFileName.Text := APacket.FileName;
-  MetaDate.Text := FormatDateTime(  // display date in correct sys locale format
-    'ddddd', APacket.DateStamp, TFormatSettings.Create
+  var CB : IFMXClipboardService;
+  TPlatformServices.Current.SupportsPlatformService(
+    IFMXClipboardService, CB
   );
+  Assert(Assigned(CB));
+  Assert(Assigned(fSWAG));
+  Assert(not fCurrentPacket.IsNull);
+
+  var Category: TSWAGCategory;
+  if not fSWAG.TryLookupCategoryByID(fCurrentPacket.Category, Category) then
+    raise EMain.CreateFmt(
+      sBadCatID, [fCurrentPacket.Category, fCurrentPacket.ID]
+    );
+  var CBContent := Format(
+    sFmtStr,
+    [
+      fCurrentPacket.Title,
+      fCurrentPacket.Author,
+      Category.ID,
+      Category.Title,
+      fCurrentPacket.ID,
+      fCurrentPacket.FileName,
+      fCurrentPacket.DateStampAsString,
+      fCurrentPacket.SourceCode
+    ]
+  );
+  CB.SetClipboard(CBContent);
+end;
+
+procedure TMainForm.CopyActionUpdate(Sender: TObject);
+begin
+  var CBAvailable := TPlatformServices.Current.SupportsPlatformService(
+    IFMXClipboardService
+  );
+  CopyAction.Enabled := CBAvailable and not fCurrentPacket.IsNull
+end;
+
+procedure TMainForm.DisplayCurrentPacket;
+begin
+  MetaTitle.Text := EscapeAmpersands(fCurrentPacket.Title);
+  MetaAuthor.Text := fCurrentPacket.Author;
+  MetaIDs.Text := Format(
+    '%0:d (%1:d)', [fCurrentPacket.ID, fCurrentPacket.Category]
+  );
+  MetaFileName.Text := fCurrentPacket.FileName;
+  MetaDate.Text := fCurrentPacket.DateStampAsString;
   Content.BeginUpdate;
   try
-    Content.Text := APacket.SourceCode;
+    Content.Text := fCurrentPacket.SourceCode;
   finally
     Content.EndUpdate;
   end;
@@ -213,33 +277,19 @@ begin
     begin
       Assert(Assigned(fSWAG));
       var Packet := fSWAG.Packet(Cardinal(Selected.Tag));
-      DisplayPacket(Packet);
+      fCurrentPacket := Packet;
+      DisplayCurrentPacket;
     end;
     // >= 3 should never happen
   end;
   UpdateTVItemHelp(Selected);
 end;
 
-procedure TMainForm.HelpBtnClick(Sender: TObject);
+procedure TMainForm.HelpActionExecute(Sender: TObject);
 begin
   const ExecVerb: PChar = 'open';
   const HelpURL: PChar = 'https://delphidabbler.com/help/swagview/0.0/index';
   ShellExecute(0, ExecVerb, HelpURL, nil, nil, SW_SHOW);
-end;
-
-procedure TMainForm.InstallBtnClick(Sender: TObject);
-begin
-  var ZipFilePath: string;
-  if TDBSetupDlg.GetDBFilePath(Self, ZipFilePath) then
-  begin
-    if InstallDatabase(ZipFilePath) then
-      LoadDatabase
-    else
-    begin
-      ClearDatabase;
-      DisplayVersionInformation;
-    end;
-  end;
 end;
 
 function TMainForm.InstallDatabase(const AZipFilePath: string): Boolean;
@@ -284,19 +334,37 @@ begin
   end;
 end;
 
+procedure TMainForm.InstallDBActionExecute(Sender: TObject);
+begin
+  var ZipFilePath: string;
+  if TDBSetupDlg.GetDBFilePath(Self, ZipFilePath) then
+  begin
+    if InstallDatabase(ZipFilePath) then
+      LoadDatabase
+    else
+    begin
+      ClearDatabase;
+      DisplayVersionInformation;
+    end;
+  end;
+end;
+
 procedure TMainForm.LoadDatabase;
 begin
-  LoadingLbl.Text := 'Loading database...';
-  Application.ProcessMessages;
+  Cursor := crHourGlass;
+  try
+    Application.ProcessMessages;
 
-  FreeAndNil(fSWAG);  // recreate fSWAG if database read more than once
-  fSWAG := TSWAG.Create(TSWAGInstaller.SWAGDataDir);
+    FreeAndNil(fSWAG);  // recreate fSWAG if database read more than once
+    fSWAG := TSWAG.Create(TSWAGInstaller.SWAGDataDir);
 
-  DisplayVersionInformation;
-  PopulateTopLevelTreeView;
-  ShowInstallBtn('Update SWAG Database...');
-  UpdateEmptyDBNotice(False);
-  LoadingLbl.Text := string.Empty;
+    DisplayVersionInformation;
+    PopulateTopLevelTreeView;
+    ShowInstallBtn('Update SWAG &Database...');
+    UpdateEmptyDBNotice(False);
+  finally
+    Cursor := crDefault;
+  end;
 end;
 
 procedure TMainForm.LoadDataTimerTimer(Sender: TObject);
@@ -313,7 +381,6 @@ end;
 procedure TMainForm.PopulateCategoryNode(const Node: TTreeViewItem);
 begin
   Assert(Assigned(fSWAG));
-  LoadingLbl.Text := 'Loading...';
   Cursor := crHourGlass;
   Application.ProcessMessages;
   try
@@ -323,7 +390,6 @@ begin
       AddTreeViewItemToParent(Node, Packet.Title, Packet.ID);
   finally
     Cursor := crDefault;
-    LoadingLbl.Text := string.Empty;
   end;
 end;
 
