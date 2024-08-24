@@ -16,7 +16,7 @@ There is no installer, so you need to install the program manually. Proceed as f
 
 1. Create a new sub-directory to store the program and its associated files. This can be created in any writeable directory on your system drive(s), or on a removable drive.
 
-    ⚠️ Avoid using the `%ProgramFiles%` directory since will likely not be writeable.
+    ⚠️ Avoid using the `%ProgramFiles%` directory since it is unlikely to be writeable.
 
 2. Extract all the files from the zip file and copy them into the newly created directory.
 
@@ -24,7 +24,7 @@ There is no installer, so you need to install the program manually. Proceed as f
 
 4. Run the program. The first time it runs it will prompt you to install the SWAG database. See the [Getting Started](https://delphidabbler.com/help/swagview/0.0/getting-started) online help topic for details of how to do this. Once the database installation is complete the database files will have been created in a `swag` sub-directory of the directory you created at step 1.
 
-To unistall simply delete the directory in which you installed the program, along with all its sub-directories.
+To uninstall simply delete the directory in which you installed the program, along with all its sub-directories.
 
 ## Documentation
 
