@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at https://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2008-2023, Peter Johnson (gravatar.com/delphidabbler).
+ * Copyright (C) 2008-2024, Peter Johnson (gravatar.com/delphidabbler).
  *
  * Based on code extracted from Src/UXMLDocumentEx.pas, copied from
  * https://github.com/delphidabbler/codesnip master branch as of commit 7482558.
