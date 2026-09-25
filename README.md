@@ -8,7 +8,7 @@ It is available in 64 bit format for Windows 64 bit systems and in 32 bit format
 
 ⚠️ This code is in early development. Expect bugs!
 
-## Installing & Unistalling
+## Installing & Uninstalling
 
 Download the latest version from the SWAGView GitHub repository's releases page. Download `swagview-exe64-x.y.z.zip` if you a running 64 bit Windows or `swagview-exe32-x.y.z.zip` for 32 bit Windows. Here `x.y.z` is the release version number.
 
