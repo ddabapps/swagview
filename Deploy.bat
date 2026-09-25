@@ -49,7 +49,7 @@ set SrcDir=src
 set PrgBaseName=SWAGView
 set ReadMe=%ReleaseDir%\README.txt
 set LicenseFile=LICENSE.txt
-set WebDocs=https://github.com/ddabapps/swagview/blob/main/README.md#installation
+set WebDocs=https://github.com/ddabapps/swagview/blob/main/README.md#installing--uninstalling
 
 :: Make a clean directory structure
 if exist %BuildRoot% rmdir /S /Q %BuildRoot%
